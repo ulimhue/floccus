@@ -7,8 +7,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - run: npm ci -f
@@ -17,8 +17,27 @@ jobs:
           CRX_KEY: ${{ secrets.CRX_KEY }}
         run: echo "$CRX_KEY" > key.pem
       - run: npm run build-release
-      - uses: actions/upload-artifact@v4
+      - name: Upload Chrome zip
+        uses: actions/upload-artifact@v7
         with:
-          name: floccus-build-${{ github.sha }}
-          path: builds/*
+          path: builds/*-chrome.zip
+          archive: false
+          retention-days: 30
+      - name: Upload Firefox zip
+        uses: actions/upload-artifact@v7
+        with:
+          path: builds/*-firefox.zip
+          archive: false
+          retention-days: 30
+      - name: Upload xpi
+        uses: actions/upload-artifact@v7
+        with:
+          path: builds/*.xpi
+          archive: false
+          retention-days: 30
+      - name: Upload crx
+        uses: actions/upload-artifact@v7
+        with:
+          path: builds/*.crx
+          archive: false
           retention-days: 30
